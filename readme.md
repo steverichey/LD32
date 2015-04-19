@@ -6,6 +6,7 @@ A browser-based first person thing.
 
 * [three.js](http://threejs.org/)
 * [pointerlock demo](http://threejs.org/examples/#misc_controls_pointerlock)
+* model made in [sketchup](http://www.sketchup.com/) and exported to JSON via [blender](https://www.blender.org/)
 
 ## License
 

@@ -162,6 +162,20 @@ function init() {
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     
+    // stars maybe
+    geometry = new THREE.IcosahedronGeometry();
+    material = new THREE.MeshBasicMaterial({color: 0xdfdfdf});
+    
+    for (var xpos = 0; xpos < 50; xpos++) {
+        for (var ypos = 0; ypos < 50; ypos++) {
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.x = rand(-1000, 1000);
+            mesh.position.y = 200;
+            mesh.position.z = rand(-1000, 1000);
+            scene.add(mesh);
+        }
+    }
+    
     // cannon
     console.log("about to load cannon model");
     var loader = new THREE.JSONLoader();
