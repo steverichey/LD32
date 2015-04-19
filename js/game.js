@@ -35,20 +35,21 @@ function render() {
     mesh_cube.rotation.y += 0.01;
     
     if (INPUT.A)
-        camera.position.x -= 0.1;
+        camera.position.x -= camera.rotation.x;
     
     if (INPUT.W)
-        camera.position.z -= 0.1;
+        camera.position.z -= camera.rotation.z;
     
     if (INPUT.D)
-        camera.position.x += 0.1;
+        camera.position.x += camera.rotation.x;
     
     if (INPUT.S)
-        camera.position.z += 0.1;
+        camera.position.z += camera.rotation.z;
     
-    //if (MOUSE.fresh) {
-        //camera.lo
-    //}
+    if (MOUSE.fresh) {
+        camera.rotation.y = MOUSE.x;
+        camera.rotation.x = MOUSE.y;
+    }
     
     trace("pos: " + round(camera.position.x) + ", " + round(camera.position.y) + ", " + round(camera.position.z));
     

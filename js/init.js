@@ -20,7 +20,7 @@ function round(number) {
 }
 
 function randomGreen() {
-    return randomColor();
+    return randomColor({hue: "green", luminosity: "dark"});
 }
 
 // create a scene

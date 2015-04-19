@@ -1,5 +1,5 @@
 var INPUT = {A: false, W: false, S: false, D: false};
-var MOUSE = {x: 0.0, y: 0.0, delta: {x: 0, y: 0}, fresh: false};
+var MOUSE = {x: 0.0, y: 0.0, delta: {x: 0, y: 0}, absolute: {x: 0, y: 0}, fresh: false};
 
 // input loop
 function keydown(event) {
@@ -49,10 +49,19 @@ function mousemove(event) {
     var newx = event.clientX / CANVAS_SIZE.width;
     var newy = event.clientY / CANVAS_SIZE.height;
     
+    newx -= 0.5;
+    newy -= 0.5;
+    
+    newx *= 2;
+    newy *= 2;
+    
     MOUSE.delta.x = newx - MOUSE.x;
     MOUSE.delta.y = newy - MOUSE.y;
+    MOUSE.absolute.x = event.clientX;
+    MOUSE.absolute.y = event.clientY;
     MOUSE.x = newx;
     MOUSE.y = newy;
+    
     MOUSE.fresh = true;
 }
 
