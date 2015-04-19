@@ -1,0 +1,16 @@
+{
+    "name": "ID40Geometry",
+    "metadata": {
+        "version": 3,
+        "generator": "io_three",
+        "vertices": 4,
+        "faces": 2,
+        "type": "Geometry",
+        "normals": 1,
+        "uvs": 0
+    },
+    "vertices": [0.0254,-0.031294,0.254,-0.0254,-0.031294,0.3048,-0.0254,-0.031294,0.254,0.0254,-0.031294,0.3048],
+    "faces": [32,0,1,2,0,0,0,32,1,0,3,0,0,0],
+    "normals": [0,-1,0],
+    "uvs": []
+}

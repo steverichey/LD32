@@ -2,11 +2,11 @@
 var camera, scene, renderer, geometry, material, mesh, controls, raycaster, cannon;
 var objects = [];
 
-var blocker = document.getElementById('blocker');
-var instructions = document.getElementById('instructions');
+var blocker = document.getElementById("blocker");
+var instructions = document.getElementById("instructions");
 
 // http://www.html5rocks.com/en/tutorials/pointerlock/intro/
-var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
+var havePointerLock = "pointerLockElement" in document || "mozPointerLockElement" in document || "webkitPointerLockElement" in document;
 
 if (havePointerLock) {
     var element = document.body;
@@ -15,43 +15,43 @@ if (havePointerLock) {
         if (document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element) {
             controlsEnabled = true;
             controls.enabled = true;
-            blocker.style.display = 'none';
+            blocker.style.display = "none";
         } else {
             controls.enabled = false;
-            blocker.style.display = '-webkit-box';
-            blocker.style.display = '-moz-box';
-            blocker.style.display = 'box';
-            instructions.style.display = '';
+            blocker.style.display = "-webkit-box";
+            blocker.style.display = "-moz-box";
+            blocker.style.display = "box";
+            instructions.style.display = "";
         }
     }
     
     var pointerlockerror = function ( event ) {
-        instructions.style.display = '';
+        instructions.style.display = "";
     }
     
-    document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-    document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-    document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+    document.addEventListener( "pointerlockchange", pointerlockchange, false );
+    document.addEventListener( "mozpointerlockchange", pointerlockchange, false );
+    document.addEventListener( "webkitpointerlockchange", pointerlockchange, false );
 
-    document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-    document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-    document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+    document.addEventListener( "pointerlockerror", pointerlockerror, false );
+    document.addEventListener( "mozpointerlockerror", pointerlockerror, false );
+    document.addEventListener( "webkitpointerlockerror", pointerlockerror, false );
 
-    instructions.addEventListener( 'click', function ( event ) {
-        instructions.style.display = 'none';
+    instructions.addEventListener( "click", function ( event ) {
+        instructions.style.display = "none";
         element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
 
         if ( /Firefox/i.test( navigator.userAgent ) ) {
             var fullscreenchange = function ( event ) {
                 if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
-                    document.removeEventListener( 'fullscreenchange', fullscreenchange );
-                    document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+                    document.removeEventListener( "fullscreenchange", fullscreenchange );
+                    document.removeEventListener( "mozfullscreenchange", fullscreenchange );
                     element.requestPointerLock();
                 }
             }
 
-            document.addEventListener( 'fullscreenchange', fullscreenchange, false );
-            document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+            document.addEventListener( "fullscreenchange", fullscreenchange, false );
+            document.addEventListener( "mozfullscreenchange", fullscreenchange, false );
             element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
             element.requestFullscreen();
         } else {
@@ -59,7 +59,7 @@ if (havePointerLock) {
         }
     }, false );
 } else {
-    instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+    instructions.innerHTML = "Your browser doesn\"t seem to support Pointer Lock API";
 }
 
 init();
@@ -143,8 +143,8 @@ function init() {
         }
     };
 
-    document.addEventListener('keydown', onKeyDown, false);
-    document.addEventListener('keyup', onKeyUp, false);
+    document.addEventListener("keydown", onKeyDown, false);
+    document.addEventListener("keyup", onKeyUp, false);
 
     raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 
@@ -154,7 +154,7 @@ function init() {
 
     for (var i = 0, l = geometry.faces.length; i < l; i ++) {
         var face = geometry.faces[i];
-        face.color = new THREE.Color().setHSL(rand(0.25, 0.35), 0.75, 0.6);
+        face.color = new THREE.Color().setHSL(rand(0.25, 0.35), rand(0.7, 0.8), rand(0.5, 0.6));
     }
 
     material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors});
@@ -162,12 +162,15 @@ function init() {
     mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
     
-    // cannon?
-    var geometry = new THREE.BoxGeometry(5, 5, 5);
-    var material = new THREE.MeshBasicMaterial({color: 0xff0000});
-    cannon = new THREE.Mesh(geometry, material);
-    scene.add(cannon);
-    cannon.position.y = 5;
+    // cannon
+    console.log("about to load cannon model");
+    var loader = new THREE.JSONLoader();
+    loader.load("models/cannon.json", function(geometry) {
+        console.log("loaded json");
+        var cannon_mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5}));
+        scene.add(cannon_mesh);
+        cannon_mesh.y = 50;
+    });
 
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor( 0x000000 );
@@ -175,7 +178,7 @@ function init() {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener("resize", onWindowResize, false);
 }
 
 function onWindowResize() {
@@ -189,10 +192,14 @@ function animate() {
 
     if (controlsEnabled) {
         // cannon stuff
-        var camobj = controls.getObject();
-        cannon.position.x = camobj.position.x;
-        cannon.position.z = camobj.position.z;
-        camera.rotation = camobj.rotation;
+        if (typeof cannon !== "undefined") {
+            var camobj = controls.getObject();
+            cannon.position.x = camobj.position.x;
+            cannon.position.z = camobj.position.z;
+            cannon.rotation.x = camobj.rotation.x;
+            cannon.rotation.y = camobj.rotation.y;
+            cannon.rotation.z = camobj.rotation.z;
+        }
         
         raycaster.ray.origin.copy( controls.getObject().position );
         raycaster.ray.origin.y -= 10;
