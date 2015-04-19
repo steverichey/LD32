@@ -2,6 +2,10 @@
 
 A browser-based first person thing.
 
+## Notes
+
+* Uses a Google font (Raleway)
+
 ## Credits
 
 * [three.js](http://threejs.org/)

@@ -80,7 +80,7 @@ function rand(min, max) {
 }
 
 function init() {
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     scene = new THREE.Scene();
     scene.fog = new THREE.Fog(0x000000, 0, 750);
@@ -170,7 +170,7 @@ function init() {
         for (var ypos = 0; ypos < 50; ypos++) {
             mesh = new THREE.Mesh(geometry, material);
             mesh.position.x = rand(-1000, 1000);
-            mesh.position.y = 200;
+            mesh.position.y = rand(150, 350);
             mesh.position.z = rand(-1000, 1000);
             scene.add(mesh);
         }
@@ -181,9 +181,9 @@ function init() {
     var loader = new THREE.JSONLoader();
     loader.load("models/cannon.json", function(geometry) {
         console.log("loaded json");
-        var cannon_mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5}));
-        scene.add(cannon_mesh);
-        cannon_mesh.y = 50;
+        cannon = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({color: 0xffffff, shading: THREE.FlatShading, overdraw: 0.5}));
+        //scene.add(cannon);
+        cannon.position.y += 9.5;
     });
 
     renderer = new THREE.WebGLRenderer();
