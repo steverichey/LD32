@@ -1,5 +1,5 @@
 (function() {
-var camera, scene, renderer, geometry, material, mesh, controls, raycaster;
+var camera, scene, renderer, geometry, material, mesh, controls, raycaster, cannon;
 var objects = [];
 
 var blocker = document.getElementById('blocker');
@@ -80,15 +80,15 @@ function rand(min, max) {
 }
 
 function init() {
-    camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 1000 );
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog( 0x000000, 0, 750 );
+    scene.fog = new THREE.Fog(0x000000, 0, 750);
 
-    scene.add( new THREE.AmbientLight( 0x505050 ) );
+    scene.add(new THREE.AmbientLight(0x505050));
 
-    var light = new THREE.SpotLight( 0x505050, 1.5 );
-    light.position.set( 0, 500, 2000 );
+    var light = new THREE.SpotLight(0x505050, 1.5);
+    light.position.set(0, 500, 2000);
     light.castShadow = true;
     light.shadowCameraNear = 200;
     light.shadowCameraFar = camera.far;
@@ -143,10 +143,10 @@ function init() {
         }
     };
 
-    document.addEventListener( 'keydown', onKeyDown, false );
-    document.addEventListener( 'keyup', onKeyUp, false );
+    document.addEventListener('keydown', onKeyDown, false);
+    document.addEventListener('keyup', onKeyUp, false);
 
-    raycaster = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, - 1, 0 ), 0, 10 );
+    raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 
     // floor
     geometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
@@ -154,7 +154,7 @@ function init() {
 
     for (var i = 0, l = geometry.faces.length; i < l; i ++) {
         var face = geometry.faces[i];
-        face.color = new THREE.Color().setHSL(rand(0.2, 0.4), 0.75, 0.6);
+        face.color = new THREE.Color().setHSL(rand(0.25, 0.35), 0.75, 0.6);
     }
 
     material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors});
@@ -163,7 +163,11 @@ function init() {
     scene.add(mesh);
     
     // cannon?
-    
+    var geometry = new THREE.BoxGeometry(5, 5, 5);
+    var material = new THREE.MeshBasicMaterial({color: 0xff0000});
+    cannon = new THREE.Mesh(geometry, material);
+    scene.add(cannon);
+    cannon.position.y = 5;
 
     renderer = new THREE.WebGLRenderer();
     renderer.setClearColor( 0x000000 );
@@ -183,45 +187,35 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame( animate );
 
-    if ( controlsEnabled ) {
+    if (controlsEnabled) {
+        // cannon stuff
+        var camobj = controls.getObject();
+        cannon.position.x = camobj.position.x;
+        cannon.position.z = camobj.position.z;
+        camera.rotation = camobj.rotation;
+        
         raycaster.ray.origin.copy( controls.getObject().position );
         raycaster.ray.origin.y -= 10;
-
-        var intersections = raycaster.intersectObjects( objects );
-
-        var isOnObject = intersections.length > 0;
 
         var time = performance.now();
         var delta = ( time - prevTime ) / 1000;
 
         velocity.x -= velocity.x * 10.0 * delta;
         velocity.z -= velocity.z * 10.0 * delta;
-
         velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
 
-        if ( moveForward ) velocity.z -= 400.0 * delta;
-        if ( moveBackward ) velocity.z += 400.0 * delta;
-
-        if ( moveLeft ) velocity.x -= 400.0 * delta;
-        if ( moveRight ) velocity.x += 400.0 * delta;
-
-        if ( isOnObject === true ) {
-            velocity.y = Math.max( 0, velocity.y );
-
-            canJump = true;
-        }
+        if (moveForward) velocity.z -= 400.0 * delta;
+        if (moveBackward) velocity.z += 400.0 * delta;
+        if (moveLeft) velocity.x -= 400.0 * delta;
+        if (moveRight) velocity.x += 400.0 * delta;
 
         controls.getObject().translateX( velocity.x * delta );
         controls.getObject().translateY( velocity.y * delta );
         controls.getObject().translateZ( velocity.z * delta );
 
-        if ( controls.getObject().position.y < 10 ) {
-
+        if (controls.getObject().position.y < 10) {
             velocity.y = 0;
             controls.getObject().position.y = 10;
-
-            canJump = true;
-
         }
 
         prevTime = time;

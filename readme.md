@@ -1,11 +1,11 @@
 # Ludum Dare 32
 
-A browser-based FPS maybe?
+A browser-based first person thing.
 
 ## Credits
 
 * [three.js](http://threejs.org/)
-* [randomcolor.js](https://github.com/davidmerfield/randomColor)
+* [pointerlock demo](http://threejs.org/examples/#misc_controls_pointerlock)
 
 ## License
 
