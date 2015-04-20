@@ -151,10 +151,17 @@ function init() {
     // floor
     geometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
     geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    
+    for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+        var vertex = geometry.vertices[ i ];
+        vertex.x += rand(-10, 10);
+        vertex.y += rand(-4, 4);
+        vertex.z += rand(-10, 10);
+    }
 
     for (var i = 0, l = geometry.faces.length; i < l; i ++) {
         var face = geometry.faces[i];
-        face.color = new THREE.Color().setHSL(rand(0.25, 0.35), rand(0.7, 0.8), rand(0.5, 0.6));
+        face.color = new THREE.Color().setHSL(rand(0.5, 0.7), rand(0.25, 0.5), rand(0.5, 1));
     }
 
     material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors});
