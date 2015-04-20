@@ -1,4 +1,4 @@
-# [There Is Nothing In This Nigh Endless Expanse.](https://steverichey.github.io/LD32/)
+# [There Is Nothing In This Endless Expanse.](https://steverichey.github.io/LD32/)
 
 A browser-based first person thing.
 
