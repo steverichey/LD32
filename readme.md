@@ -9,6 +9,7 @@ A browser-based first person thing.
 ## Credits
 
 * [three.js](http://threejs.org/)
+* [howler.js](https://github.com/goldfire/howler.js/)
 * [pointerlock demo](http://threejs.org/examples/#misc_controls_pointerlock)
 * model made in [sketchup](http://www.sketchup.com/) and exported to JSON via [blender](https://www.blender.org/)
 
