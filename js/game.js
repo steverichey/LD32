@@ -1,5 +1,5 @@
 (function() {
-var camera, scene, renderer, geometry, material, mesh, controls, raycaster, cannon;
+var camera, scene, renderer, geometry, material, mesh, controls, raycaster, cannon, star, stars = [];
 var objects = [];
 
 var blocker = document.getElementById("blocker");
@@ -149,7 +149,7 @@ function init() {
     raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
 
     // floor
-    geometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+    geometry = new THREE.PlaneGeometry(3000, 3000, 100, 100);
     geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
     
     for ( var i = 0, l = geometry.vertices.length; i < l; i ++ ) {
@@ -176,12 +176,23 @@ function init() {
     for (var xpos = 0; xpos < 50; xpos++) {
         for (var ypos = 0; ypos < 50; ypos++) {
             mesh = new THREE.Mesh(geometry, material);
-            mesh.position.x = rand(-1000, 1000);
+            mesh.position.x = rand(-1500, 1500);
             mesh.position.y = rand(150, 350);
-            mesh.position.z = rand(-1000, 1000);
+            mesh.position.z = rand(-1500, 1500);
             scene.add(mesh);
+            stars.push(mesh);
         }
     }
+    
+    var fallingstar = function() {
+        if (star) {
+            return;
+        }
+        
+        star = stars[Math.round(Math.random() * (stars.length - 1))];
+    }
+    
+    setInterval(fallingstar, 5);
     
     // cannon
     console.log("about to load cannon model");
@@ -198,6 +209,16 @@ function init() {
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
+    
+    // play sound
+    var sound = new Howl({
+        urls: ["snd/cannon.ogg", "snd/cannon.mp3"],
+        loop: true,
+        autoplay: true,
+        onend: function() {
+            sound.play();
+        }
+    });
 
     window.addEventListener("resize", onWindowResize, false);
 }
@@ -220,6 +241,16 @@ function animate() {
             cannon.rotation.x = camobj.rotation.x;
             cannon.rotation.y = camobj.rotation.y;
             cannon.rotation.z = camobj.rotation.z;
+        }
+        
+        // star stuff
+        if (star) {
+            star.position.x -= 1;
+            star.position.y -= 1;
+            
+            if (star.position.y < -4) {
+                star = null;
+            }
         }
         
         raycaster.ray.origin.copy( controls.getObject().position );
@@ -245,6 +276,12 @@ function animate() {
             velocity.y = 0;
             controls.getObject().position.y = 10;
         }
+        
+        var pos = controls.getObject().position;
+        if (pos.x < -900) pos.x = -900;
+        if (pos.x > 900) pos.x = 900;
+        if (pos.z < -900) pos.z = -900;
+        if (pos.z > 900) pos.z = 900;
 
         prevTime = time;
     }
